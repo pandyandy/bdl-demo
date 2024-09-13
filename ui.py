@@ -2,7 +2,6 @@ import streamlit as st
 import base64
 import os
 
-
 def sidebar_pages():
     with st.sidebar:
         st.page_link('hello.py', label='Home', icon='🏡')

@@ -53,7 +53,8 @@ with col2:
             """,
                 unsafe_allow_html=True
             )
-            
+LOGO_URL = 'https://assets-global.website-files.com/5e21dc6f4c5acf29c35bb32c/5e21e66410e34945f7f25add_Keboola_logo.svg'
+
 with stylable_container(key="grey_container", css_styles="{background-color: #F7F7F7; border-radius: 0.5rem; padding: 1em; margin-top: 10px;}"):
     with st.container():
         st.markdown(f"""  
