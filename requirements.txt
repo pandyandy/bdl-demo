@@ -2,3 +2,4 @@ streamlit-extras
 networkx
 openai
 wordcloud
+sqlalchemy
