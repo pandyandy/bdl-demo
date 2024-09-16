@@ -42,7 +42,8 @@ In the Keboola AI Playground, you'll have the opportunity to:
     <li>Explore other cutting-edge AI capabilities</li>
 </ul>
 """, unsafe_allow_html=True)
-            
+
+
 col1, col2 = st.columns([0.4, 0.6])
 with col2:
     with stylable_container(key="blue_container", css_styles="{background-color: #238DFF; border-radius: 0.5rem; padding: 1em; margin-top: 10px;}"):
@@ -53,7 +54,7 @@ with col2:
             """,
                 unsafe_allow_html=True
             )
-            
+
 with stylable_container(key="grey_container", css_styles="{background-color: #F7F7F7; border-radius: 0.5rem; padding: 1em; margin-top: 10px;}"):
     with st.container():
         st.markdown(f"""  

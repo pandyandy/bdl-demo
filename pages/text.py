@@ -97,8 +97,8 @@ st.info(
     "Enter any text to extract entities, analyze sentiment, identify topics, and visualize relationships.", 
     icon="ℹ️"
     )
-
-text_input = st.text_area("Enter your text here:", height=200)
+text = "Big Data LDN (London) is the UK's leading data, analytics & AI event. The event is a free to attend two-day combined conference and exhibition focusing on how to build dynamic, data-driven enterprises. Delegates will learn from pioneers, experts and real-world case studies, discovering new tools and techniques, enabling them to deliver business value from successful data projects. The event provides delegates with the opportunity to discuss their business requirements with leading technology vendors and consultants and hear from expert speakers in our comprehensive conference programme."
+text_input = st.text_area("Try with the text below or enter your own:", height=200, value=text)
 
 if st.button("Analyze Text"):
     if text_input:
@@ -128,3 +128,4 @@ if st.button("Analyze Text"):
 
         st.subheader("Structured JSON Output")
         st.json(analysis)
+        st.write(analysis)

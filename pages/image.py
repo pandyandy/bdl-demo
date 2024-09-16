@@ -14,8 +14,8 @@ def ask_openai(question):
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
-            {
-            "role": "user",
+            {"role": "system", "content": "You are a helpful assistant answering questions about images. If the question is not related to the image, don't answer."},
+            {"role": "user",
             "content": [
                 {"type": "text", "text": question},
                 {
@@ -36,7 +36,7 @@ sidebar_pages()
 
 st.image("https://innovatek.co.nz/wp-content/uploads/2024/01/Scania_Timber_Truck.jpg")
 
-col1, col2, col3 = st.columns(3, vertical_alignment="center")
+col1, col2, col3, col4 = st.columns([0.25, 0.25, 0.3, 0.2], vertical_alignment="center")
 if col1.button("What's in this image?", use_container_width=True):
     question = "What's in this image?"
     answer = ask_openai(question)
@@ -50,9 +50,25 @@ if col2.button("How full is the truck?", use_container_width=True):
     st.session_state.answer = answer
 
 if col3.button("How full is the truck? Answer with a %.", use_container_width=True):
-    question = "How full is the truck? Make a qualified guess and answer with a percentage."
+    question = "How full is the truck? Make a qualified guess and return only the percentage as an answer."
     answer = ask_openai(question)
-    st.session_state.question = question
+    st.session_state.question = "How full is the truck? Answer with a percentage."
+    st.session_state.answer = answer
+
+if col4.button("JSON Format Response", use_container_width=True):
+    question = """
+    Analyze the image and answer:
+    1. What's in the image?
+    2. How full is the truck? Make a qualified guess and return only the percentage as an answer.
+
+    Respond in the following JSON format:
+    {{
+        "object": "object",
+        "estimated_fullness_percentage": "75"
+    }}
+    """
+    answer = ask_openai(question)
+    st.session_state.question = "Describe the image and estimate the fullness of the truck. Respond in JSON format."
     st.session_state.answer = answer
 
 # Text input for custom question
