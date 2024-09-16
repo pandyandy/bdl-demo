@@ -1,30 +1,33 @@
 import streamlit as st
+from ui import sidebar_pages
 
-st.page_link('hello.py', label='Go back', icon='↩️')
-        
-# Title and Subtitle
-st.title("Welcome to the Ultimate Challenge Game! 🎮")
+st.title("🎢 Unstructured to Structured Playground")
+sidebar_pages()
 
-# Collecting user input
-name = st.text_input("Enter your Name:")
-company = st.text_input("Enter your Company:")
-contact = st.text_input("Contact (Optional):")
-
-# Instructions
 st.markdown("""
-### Game Instructions
-1. **Three Challenges Ahead**: You will face three exciting challenges.
-2. **Scoring**: Try to get the maximum points! You can attempt each challenge as many times as you want.
-3. **Time Matters**: The faster you complete the challenges, the more points you will earn. Don't take too long!
+Welcome to the LLM Unstructured to Structured Data Playground! Here, you can experiment with prompting an LLM to convert unstructured data into structured formats.
+
+### How it works:
+1. You'll provide an unstructured text input.
+2. You'll craft a prompt for the LLM to structure the data.
+3. The LLM will attempt to convert the unstructured data based on your prompt.
+4. You can iterate and refine your prompts to improve the results.
+
+### Tips for effective prompting:
+- Be clear and specific about the desired output format.
+- Provide examples if possible.
+- Experiment with different prompting techniques.
 """)
 
-# Button to start the game
-#if st.button("Start Game"):
-if name and company:
-    st.success(f"Click the button below to start the game. Good luck, {name} from {company}!")
-    disabled = False  
+# User input fields
+st.subheader("Tell us about yourself")
+name = st.text_input("Your Name")
+company = st.text_input("Company Name")
+contact = st.text_input("Contact Information")
+
+if name and company and contact:
+    st.success(f"Welcome, {name}! Good luck and have fun in the playground!")
+    st.page_link('pages/playground.py', label='START', icon='🚀', use_container_width=True)
 else:
-    st.error("Please enter both your name and company to start the game.")
-    disabled = True
-st.page_link('pages/game.py', label='START', icon='🚀', use_container_width=True, disabled=disabled)
-    
+    st.info("Please fill out all fields to access the playground.")
+    st.page_link('pages/playground.py', label='START', icon='🚀', use_container_width=True, disabled=True)

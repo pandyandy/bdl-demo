@@ -90,15 +90,15 @@ def get_level_data(level):
         return orders_df, "Find the total quantity ordered for each product. Return only product_id and count.", expected_result
     elif level == 3:
         expected_result = pd.merge(products_df, orders_df, on='product_id', how='left').groupby('product_name')['quantity'].sum().reset_index()
-        expected_result = expected_result.rename(columns={'quantity': 'total_quantity'})
-        expected_result['total_quantity'] = expected_result['total_quantity'].astype(int)
+        expected_result = expected_result.rename(columns={'quantity': 'total_quantity_ordered'})
+        expected_result['total_quantity_ordered'] = expected_result['total_quantity_ordered'].astype(int)
         return [products_df, orders_df], "Find the total quantity ordered for each product and display the product name. Return only product name and quantity.", expected_result
     elif level == 4:
         expected_result = pd.merge(products_df, orders_df, on='product_id')
         expected_result['total_price'] = expected_result['price'] * expected_result['quantity']
         expected_result = expected_result.groupby('order_id')['total_price'].sum().reset_index()
-        expected_result = expected_result.rename(columns={'total_price': 'total_value'})
-        expected_result = expected_result.sort_values('total_value', ascending=False).head(1)
+        expected_result = expected_result.rename(columns={'total_price': 'highest_total_value'})
+        expected_result = expected_result.sort_values('highest_total_value', ascending=False).head(1)
         return [products_df, orders_df], "Find the order with the highest total value. Return the order_id and the total value.", expected_result
     elif level == 5:
         expected_result = pd.merge(products_df, orders_df, on='product_id', how='left')
@@ -114,12 +114,24 @@ table_df, task_description, expected_result = get_level_data(st.session_state.le
 st.write(f"## Level {st.session_state.level}")
 st.write("**Task:** " + task_description)
 st.write("**Table(s) you are working with:**")
+
 if isinstance(table_df, list):
-    for i, df in enumerate(table_df):
-        st.write(f"Table {i+1}:")
-        st.dataframe(df)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("Table 1:")
+        st.dataframe(table_df[0], use_container_width=True, hide_index=True)
+    with col2:
+        st.write("Table 2:")
+        st.dataframe(table_df[1], use_container_width=True, hide_index=True)
 else:
-    st.dataframe(table_df)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.dataframe(table_df, use_container_width=True, hide_index=True)
+
+st.write('**Expected Result:**')
+col1, col2 = st.columns(2)
+with col1:
+    st.dataframe(expected_result, use_container_width=True, hide_index=True)
 
 prompt = st.text_area("Write a prompt to generate the SQL query:")
 
@@ -146,8 +158,8 @@ if st.button("Submit"):
             result = execute_query(sql_query)
             if result is not None:
                 st.write("**Query Result:**")
-                st.dataframe(result)
-                st.dataframe(expected_result)
+                st.dataframe(result, use_container_width=True, hide_index=True)
+                
                 # Validate result
                 is_correct = result.reset_index(drop=True).equals(expected_result.reset_index(drop=True))
                 

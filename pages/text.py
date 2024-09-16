@@ -91,7 +91,7 @@ sidebar_pages()
 
 client = OpenAI(api_key=st.secrets['api_key'])
 
-st.title("Text Transmutation: Unstructured to Structured Data")
+st.title("📝 From Unstructured Text to Structured Data")
 st.info(
     "Use AI to transform unstructured text data into structured insights. "
     "Enter any text to extract entities, analyze sentiment, identify topics, and visualize relationships.", 
@@ -128,4 +128,3 @@ if st.button("Analyze Text"):
 
         st.subheader("Structured JSON Output")
         st.json(analysis)
-        st.write(analysis)
