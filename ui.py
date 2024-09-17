@@ -1,7 +1,7 @@
 import streamlit as st
 import base64
 import os
-
+    
 def sidebar_pages():
     with st.sidebar:
         st.page_link('hello.py', label='Home', icon='🏡')
@@ -10,7 +10,7 @@ def sidebar_pages():
         st.page_link('pages/text.py', label='Text', icon='📝')
         st.page_link('pages/image.py', label='Image', icon='🖼️')
         st.divider()
-        st.write("### Try it yourself!")
+        st.write("### Try it yourself")
         st.page_link('pages/intro.py', label='Playground', icon='🎢')
         #st.page_link('pages/quest_1.py', label='Challenge 1', icon='🔍')
         #st.page_link('pages/quest_2.py', label='Challenge 2', icon='🔍')
@@ -29,6 +29,17 @@ def get_image_base64(image_path: str):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
+def logo():
+    LOGO_URL = 'https://assets-global.website-files.com/5e21dc6f4c5acf29c35bb32c/5e21e66410e34945f7f25add_Keboola_logo.svg'
+
+    st.markdown(
+        f'''
+        <div style="text-align: right;">
+            <img src="{LOGO_URL}" alt="Logo" width="150">
+        </div>
+        ''',
+        unsafe_allow_html=True
+    )
 
 def display_footer_section():
     # Inject custom CSS for alignment and style
@@ -47,7 +58,7 @@ def display_footer_section():
                 align-items: center;
             }}
             .footer p {{
-                margin: 20px 0 0 0;  /* Removes default margin for p elements */
+                margin: 10px 0 10px 0;  /* Removes default margin for p elements */
                 padding: 0;  /* Ensures no additional padding is applied */
             }}
             .footer img {{

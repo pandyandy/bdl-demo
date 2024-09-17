@@ -53,15 +53,16 @@ def analyze_text(text):
             return None
 
         # Attempt to parse JSON
-        analysis = json.loads(raw_content)
-        return analysis
-    
-    except json.JSONDecodeError:
-        st.error("Failed to decode JSON. The API response might be invalid.")
-        st.warning("Invalid JSON Response:", raw_content)  # Debug: Print the problematic response
-        return None
+        try:
+            analysis = json.loads(raw_content)
+            return analysis
+        except json.JSONDecodeError:
+            st.warning("Received an invalid response format. Please try again. 🙏")
+            with st.expander("Response"):
+                st.markdown(raw_content)
+            return None    
     except Exception as e:
-        st.error(f"An error occurred: {str(e)}")
+        st.warning(f"An error occurred: {str(e)}")
         return None
         
 def create_network_graph(relationships):
@@ -85,9 +86,7 @@ def create_word_cloud(text):
     plt.title("Word Cloud")
     return plt
 
-
 sidebar_pages()
-
 
 client = OpenAI(api_key=st.secrets['api_key'])
 
@@ -105,26 +104,27 @@ if st.button("Analyze Text"):
         with st.spinner("Analyzing text..."):
             analysis = analyze_text(text_input)
 
-        st.subheader("Entities")
-        st.write(", ".join(analysis['entities']))
+            if analysis is not None:
+                st.subheader("Entities")    
+                st.write(", ".join(analysis['entities']))
 
-        st.subheader("Sentiment")
-        st.write(analysis['sentiment'])
+                st.subheader("Sentiment")
+                st.write(analysis['sentiment'])
 
-        st.subheader("Topics")
-        st.write(", ".join(analysis['topics']))
+                st.subheader("Topics")
+                st.write(", ".join(analysis['topics']))
 
-        st.subheader("Relationships")
-        for rel in analysis['relationships']:
-            st.write(f"{rel['entity1']} - {rel['relationship']} - {rel['entity2']}")
+                st.subheader("Relationships")
+                for rel in analysis['relationships']:
+                    st.write(f"{rel['entity1']} - {rel['relationship']} - {rel['entity2']}")
 
-        st.subheader("Network Graph")
-        network_graph = create_network_graph(analysis['relationships'])
-        st.pyplot(network_graph)
+                st.subheader("Network Graph")
+                network_graph = create_network_graph(analysis['relationships'])
+                st.pyplot(network_graph)
 
-        st.subheader("Word Cloud")
-        word_cloud = create_word_cloud(text_input)
-        st.pyplot(word_cloud)
+                st.subheader("Word Cloud")
+                word_cloud = create_word_cloud(text_input)
+                st.pyplot(word_cloud)
 
-        st.subheader("Structured JSON Output")
-        st.json(analysis)
+                st.subheader("Structured JSON Output")
+                st.json(analysis)
