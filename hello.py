@@ -56,6 +56,8 @@ with stylable_container(key="grey_container_hello", css_styles="{background-colo
     with st.container():
         st.markdown(f"""
 Keboola is a data operations platform that empowers organizations to automate their data workflows, integrate various data sources, and create meaningful data products. Our platform is designed to help data engineers, data scientists, and business users collaborate more effectively by simplifying complex data processes and enhancing data-driven decision-making.
+
+💌 For more information or inquiries, please contact us at contact@keboola.com.
 """,
 unsafe_allow_html=True
 )
