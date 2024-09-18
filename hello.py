@@ -55,7 +55,7 @@ st.markdown("#### About Keboola", unsafe_allow_html=True)
 with stylable_container(key="grey_container_hello", css_styles="{background-color: #F7F7F7; border-radius: 0.5rem; padding: 1em;}"):
     with st.container():
         st.markdown(f"""
-Keboola is a data operations platform that empowers organizations to automate their data workflows, integrate various data sources, and create meaningful data products. Our platform is designed to help data engineers, data scientists, and business users collaborate more effectively by simplifying complex data processes and enhancing data-driven decision-making.
+Keboola integrates and automates the management of disparate data from your existing tools and systems. By leveraging low-code controls, data apps, templates, and GenAI, businesses can rapidly prototype AI and analytics use cases directly in Marketing, HR, Finance, and beyond, without solely relying on central IT.
 
 💌 For more information or inquiries, please contact us at contact@keboola.com.
 """,
