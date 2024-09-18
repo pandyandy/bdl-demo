@@ -6,7 +6,7 @@ def sidebar_pages():
     with st.sidebar:
         st.page_link('hello.py', label='Home', icon='🏡')
         st.divider()
-        st.write("### Examples:")
+        st.write("### Examples")
         st.page_link('pages/text.py', label='Text', icon='📝')
         st.page_link('pages/image.py', label='Image', icon='🖼️')
         st.divider()

@@ -33,7 +33,7 @@ class KeboolaStreamlit:
         Returns:
             dict: The headers for the current request.
         """
-        headers = _get_websocket_headers()
+        headers = st.context.headers
         return headers if 'X-Kbc-User-Email' in headers else (self.dev_mockup_headers or {})
 
     def _get_sapi_client(self):

@@ -22,7 +22,7 @@ logo()
 ""
 st.header("👋 Welcome to Keboola AI Playground!")
 st.markdown("""
-    In this app, you can explore the following sections:
+    Navigate to the sidebar to explore the following sections:
     """,
     unsafe_allow_html=True
 )

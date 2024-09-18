@@ -1,7 +1,10 @@
 import streamlit as st
 from openai import OpenAI
 from streamlit_extras.stylable_container import stylable_container
-from ui import sidebar_pages
+from ui import sidebar_pages, logo
+import requests
+from PIL import Image
+from io import BytesIO
 
 if 'answer' not in st.session_state:
     st.session_state.answer = None
@@ -11,6 +14,10 @@ if 'answer_custom' not in st.session_state:
     st.session_state.answer_custom = None
 if 'question_custom' not in st.session_state:
     st.session_state.question_custom = None
+if 'url' not in st.session_state:
+    st.session_state.url = None
+if '_url' not in st.session_state:
+    st.session_state._url = st.session_state.url
 
 client = OpenAI(api_key=st.secrets['api_key'])
 
@@ -34,11 +41,30 @@ def ask_openai(question, image_url):
     )
     return response.choices[0].message.content
 
+def update_url():
+    """
+    Updates the number of input questions.
+    """
+    st.session_state.url = st.session_state._url
+
+def is_valid_image_url(url):
+    try:
+        response = requests.get(url)
+        # Check if response status code is OK (200) and content-type is an image
+        if response.status_code == 200 and 'image' in response.headers['Content-Type']:
+            return True
+        else:
+            return False
+    except requests.exceptions.RequestException:
+        return False
+
+logo()
 st.title("🖼️ Ask Questions About an Image")
 st.info(
     "Use AI to ask questions about images. You can work with an existing image or provide your own image URL.",
     icon="ℹ️"
     )
+
 sidebar_pages()
 ""
 image_option = st.radio("Choose an image source:", ("Use Predefined Image", "Enter Custom URL"), horizontal=True, label_visibility='collapsed')
@@ -104,11 +130,14 @@ if image_option == "Use Predefined Image":
             st.write("🤖")
 
 elif image_option == "Enter Custom URL":
-    image_url = st.text_input("Enter the URL of the image you'd like to analyze:")
+    st.session_state.url = st.session_state._url
+    image_url = st.text_input("Enter the URL of the image you'd like to analyze:", key='_url', on_change=update_url)
 
     if image_url:
-        st.image(image_url)
-
+        if is_valid_image_url(image_url):
+            st.image(image_url)
+        else:
+            st.warning("Invalid image URL. Please provide a valid URL pointing to an image.")
 
     # Text input for custom question
     custom_question = st.chat_input("Ask your own question:")

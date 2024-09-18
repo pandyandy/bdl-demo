@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 from openai import OpenAI
 from wordcloud import WordCloud
-from ui import sidebar_pages
+from ui import sidebar_pages, logo
 
 
 def analyze_text(text):
@@ -70,12 +70,13 @@ def create_network_graph(relationships):
     for rel in relationships:
         G.add_edge(rel['entity1'], rel['entity2'], relationship=rel['relationship'])
     
-    pos = nx.spring_layout(G)
+    pos = nx.spring_layout(G, k=1.0)
     plt.figure(figsize=(12, 8))
-    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=3000, font_size=10, font_weight='bold')
+    nx.draw(G, pos, with_labels=True, node_color='#B3D6FF', node_size=3000, font_size=10, font_weight='bold')
     edge_labels = nx.get_edge_attributes(G, 'relationship')
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=9, bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.3'), label_pos=0.5)
     plt.title("Entity Relationship Network")
+    plt.tight_layout()
     return plt
 
 def create_word_cloud(text):
@@ -86,17 +87,18 @@ def create_word_cloud(text):
     plt.title("Word Cloud")
     return plt
 
-sidebar_pages()
-
 client = OpenAI(api_key=st.secrets['api_key'])
 
+logo()
 st.title("📝 From Unstructured Text to Structured Data")
+sidebar_pages()
 st.info(
     "Use AI to transform unstructured text data into structured insights. "
     "Enter any text to extract entities, analyze sentiment, identify topics, and visualize relationships.", 
     icon="ℹ️"
     )
 text = "Big Data LDN (London) is the UK's leading data, analytics & AI event. The event is a free to attend two-day combined conference and exhibition focusing on how to build dynamic, data-driven enterprises. Delegates will learn from pioneers, experts and real-world case studies, discovering new tools and techniques, enabling them to deliver business value from successful data projects. The event provides delegates with the opportunity to discuss their business requirements with leading technology vendors and consultants and hear from expert speakers in our comprehensive conference programme."
+""
 text_input = st.text_area("Try with the text below or enter your own:", height=200, value=text)
 
 if st.button("Analyze Text"):

@@ -3,3 +3,4 @@ networkx
 openai
 wordcloud
 sqlalchemy
+streamlit==1.38.0

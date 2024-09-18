@@ -2,10 +2,13 @@ import streamlit as st
 import networkx as nx
 import matplotlib.pyplot as plt
 import json
+import pandas as pd
+from datetime import datetime
 
 from openai import OpenAI
 from streamlit_extras.stylable_container import stylable_container
 from ui import sidebar_pages, logo
+from pages.client import keboola
 
 if 'step' not in st.session_state:
     st.session_state.step = 1
@@ -37,6 +40,8 @@ if 'llm_response_step_4_json' not in st.session_state:
     st.session_state.llm_response_step_4_json = None
 if 'llm_response_step_5_json' not in st.session_state:
     st.session_state.llm_response_step_5_json = None
+if 'df' not in st.session_state:
+    st.session_state.df = pd.DataFrame()
 
 logo()
 st.header("🎢 Unstructured to Structured Data Playground")
@@ -77,16 +82,23 @@ def update_question_step_5():
 
 
 def get_llm_response(user_prompt):
-    response = client.chat.completions.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": user_prompt}
-        ],
-        temperature=0 
-    )
-    response = response.choices[0].message.content
-    return response.strip()
+    try:
+        with st.spinner("🤖 Processing your request... please wait!"):
+            response = client.chat.completions.create(
+                model="gpt-4",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": user_prompt}
+                ],
+                temperature=0 
+            )
+            response = response.choices[0].message.content
+            return response.strip()
+    
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
+        return None
+
 
 def buttons():
     col1, col2, col3 = st.columns([0.1, 0.8, 0.1], vertical_alignment='center')
@@ -123,11 +135,19 @@ def step1():
     
     if source:
         st.caption(f"[Source]({source})")
-            
+    
+    st.session_state.df = pd.DataFrame({
+        'name': [st.session_state.name],
+        'company': [st.session_state.company],
+        'contact': [st.session_state.contact],
+        'date': [datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
+    })
+
+    keboola.write_table(table_id='in.c-bdl.data-app-bdl', df=st.session_state.df, is_incremental=True)
+
     col1, col2, col3 = st.columns(3)
-    with col3:
-        if st.button("Begin Analysis", on_click=lambda: st.session_state.update(step=st.session_state.step + 1, text_input=text_input), use_container_width=True):
-            st.rerun()
+    if col3.button("⏩ Step 2", on_click=lambda: st.session_state.update(step=st.session_state.step + 1, text_input=text_input), use_container_width=True):
+        st.rerun()
 
 # Step 2: Initial analysis
 def step2():
@@ -162,16 +182,12 @@ def step2():
         
     if st.session_state.llm_response_step_2:
         ""
-        col1, col2 = st.columns([0.05, 0.95], vertical_alignment='top')
-        with col1:
-            st.write("🤖")
-        with col2:
-            with st.container(border=True):
-                try:
-                    response_json = json.loads(st.session_state.llm_response_step_2)
-                    st.json(response_json)
-                except json.JSONDecodeError:
-                    st.markdown(st.session_state.llm_response_step_2)
+        with st.container(border=True):
+            try:
+                response_json = json.loads(st.session_state.llm_response_step_2)
+                st.json(response_json)
+            except json.JSONDecodeError:
+                st.markdown(st.session_state.llm_response_step_2)
                     
 # New function for sentiment analysis step
 def step3():
@@ -206,12 +222,8 @@ def step3():
     
     if st.session_state.llm_response_step_3:
         ""
-        col1, col2 = st.columns([0.05, 0.95], vertical_alignment='top') 
-        with col1:
-            st.write("🤖")
-        with col2:
-            with st.container(border=True):
-                st.markdown(f"{st.session_state.llm_response_step_3}")
+        with st.container(border=True):
+            st.markdown(f"{st.session_state.llm_response_step_3}")
 
 
 # Step 4: Create structured data
@@ -255,45 +267,38 @@ def step4():
         st.session_state.llm_response_step_4 = get_llm_response(f"Instruction: {user_prompt}\nKey Elements: {st.session_state.llm_response_step_2}\nSentiment: {st.session_state.llm_response_step_3}")
         st.session_state.question_step_4 = user_prompt
     
-    if st.session_state.llm_response_step_2:
-        ""
-        col1, col2 = st.columns([0.05, 0.95], vertical_alignment='top')
-        with col1:
-            st.write("🤖")
-        with col2:
-            with st.expander("Previous Results"):
-                st.write("**Extracted Key Elements from Initial Analysis:**")
-                st.markdown(f"{st.session_state.llm_response_step_2}")
-                if st.session_state.llm_response_step_3:
-                    st.write("**Sentiment Analysis Results:**")
-                    st.markdown(f"{st.session_state.llm_response_step_3}")
-    
     if st.session_state.llm_response_step_4:
         ""
-        col1, col2 = st.columns([0.05, 0.95], vertical_alignment='top')
-        with col1:
-            st.write("🤖")
-        with col2:
-            with st.container(border=True):
-                try:
-                    json_response = json.loads(st.session_state.llm_response_step_4)
-                    st.json(json_response)  # If it is valid JSON, display it as JSON
-                    st.session_state.llm_response_step_4_json = json_response
-                except (ValueError, TypeError):
-                    st.markdown(st.session_state.llm_response_step_4)
-                    st.session_state.llm_response_step_4_json = None
+        with st.container(border=True):
+            try:
+                json_response = json.loads(st.session_state.llm_response_step_4)
+                st.json(json_response)  # If it is valid JSON, display it as JSON
+                st.session_state.llm_response_step_4_json = json_response
+            except (ValueError, TypeError):
+                st.markdown(st.session_state.llm_response_step_4)
+                st.session_state.llm_response_step_4_json = None
+    
+    if st.session_state.llm_response_step_2:
+        ""
+        with st.expander("Previous Results"):
+            st.write("**Extracted Key Elements from Initial Analysis:**")
+            st.markdown(f"{st.session_state.llm_response_step_2}")
+            if st.session_state.llm_response_step_3:
+                st.write("**Sentiment Analysis Results:**")
+                st.markdown(f"{st.session_state.llm_response_step_3}")
 
 def create_network_graph(relationships):
     G = nx.Graph()
     for rel in relationships:
         G.add_edge(rel['entity1'], rel['entity2'], relationship=rel['relationship'])
     
-    pos = nx.spring_layout(G)
+    pos = nx.spring_layout(G, k=1.0)
     plt.figure(figsize=(12, 8))
-    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=3000, font_size=10, font_weight='bold')
+    nx.draw(G, pos, with_labels=True, node_color='#B3D6FF', node_size=3000, font_size=10, font_weight='bold')
     edge_labels = nx.get_edge_attributes(G, 'relationship')
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=9, bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.3'), label_pos=0.5)
     plt.title("Entity Relationship Network")
+    plt.tight_layout()
     return plt
 
 # Step 5: Generate visualizations
@@ -342,52 +347,48 @@ def step5():
     
     if st.session_state.llm_response_step_5:
         ""
-        col1, col2 = st.columns([0.05, 0.95], vertical_alignment='top')
-        with col1:
-            st.write("🤖")
-        with col2:
-            with st.container(border=True):
-                raw_content = st.session_state.llm_response_step_5
+        with st.container(border=True):
+            raw_content = st.session_state.llm_response_step_5
+            try:
+                analysis = json.loads(raw_content)
+                st.json(analysis)
+                st.session_state.llm_response_step_5_json = analysis
+
+                # Ensure the response contains the 'relationships' key
+                if 'relationships' in analysis:
+                    network_graph = create_network_graph(analysis['relationships'])
+                    st.pyplot(network_graph)
+                else:
+                    st.info("Cannot create a network graph. The response does not contain the expected 'relationships' field.", icon='ℹ️')
+            
+            except json.JSONDecodeError:
+                # If JSON parsing fails, handle code blocks or other formats
+                if raw_content.startswith("```") and raw_content.endswith("```"):
+                    raw_content = raw_content.strip("```").strip()
+                raw_content = raw_content.replace("json", "").strip()
+
                 try:
                     analysis = json.loads(raw_content)
                     st.json(analysis)
                     st.session_state.llm_response_step_5_json = analysis
-
-                    # Ensure the response contains the 'relationships' key
+                    
                     if 'relationships' in analysis:
                         network_graph = create_network_graph(analysis['relationships'])
                         st.pyplot(network_graph)
                     else:
-                        st.info("Cannot create a network graph. The response does not contain the expected 'relationships' field.", icon='ℹ️')
-                
+                        st.info("Cannot create a network graph. The response does not contain the expected 'relationships' field.")
+            
                 except json.JSONDecodeError:
-                    # If JSON parsing fails, handle code blocks or other formats
-                    if raw_content.startswith("```") and raw_content.endswith("```"):
-                        raw_content = raw_content.strip("```").strip()
-                    raw_content = raw_content.replace("json", "").strip()
-
-                    try:
-                        analysis = json.loads(raw_content)
-                        st.json(analysis)
-                        st.session_state.llm_response_step_5_json = analysis
-                        
-                        if 'relationships' in analysis:
-                            network_graph = create_network_graph(analysis['relationships'])
-                            st.pyplot(network_graph)
-                        else:
-                            st.info("Cannot create a network graph. The response does not contain the expected 'relationships' field.")
-                
-                    except json.JSONDecodeError:
-                        st.markdown(raw_content)
-                        st.session_state.llm_response_step_5_json = None
-                        st.info("Cannot create a network graph. The response is not in the expected JSON format. Please check out the hint for more information on the required structure.", icon='ℹ️')
+                    st.markdown(raw_content)
+                    st.session_state.llm_response_step_5_json = None
+                    st.info("Cannot create a network graph. The response is not in the expected JSON format. Please check out the hint for more information on the required structure.", icon='ℹ️')
 
 # Step 6: Create an interactive summary
 def step6():
     col1, col2, col3 = st.columns([0.1, 0.6, 0.3], vertical_alignment='center')
     if col1.button("⏪", on_click=lambda: st.session_state.update(step=st.session_state.step - 1), use_container_width=True):
         st.rerun()
-    if col3.button("Start Again", on_click=lambda: st.session_state.update(
+    if col3.button("🔁 Start Again", on_click=lambda: st.session_state.update(
         step=1,
         question_step_2="",
         llm_response_step_2="",
@@ -403,7 +404,9 @@ def step6():
         st.rerun()
 
     st.write("### Step 6: Final Report")
-    st.success("Congratulations! You've completed all steps. Here's the final output of your analysis! 🎉")
+    st.success("Congratulations! You've completed all steps. 🎉")
+    ""
+    st.markdown("#####  Here's the final output of your analysis:", unsafe_allow_html=True)
     ""
     st.write("**📑 From unstructured text input...**")
     with stylable_container(key="blue_container", css_styles="{background-color: #f2f8ff; border-radius: 0.5rem; padding: 1em; margin-top: 10px;}"):

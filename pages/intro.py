@@ -1,5 +1,5 @@
 import streamlit as st
-from ui import sidebar_pages
+from ui import sidebar_pages, logo
 
 if 'name' not in st.session_state:
     st.session_state.name = None
@@ -34,6 +34,7 @@ def update_contact():
     """
     st.session_state.contact = st.session_state._contact
 
+logo()
 st.title("🎢 Unstructured to Structured Playground")
 sidebar_pages()
 
