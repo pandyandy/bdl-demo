@@ -76,7 +76,6 @@ def create_network_graph(relationships):
     edge_labels = nx.get_edge_attributes(G, 'relationship')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=9, bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.3'), label_pos=0.5)
     plt.title("Entity Relationship Network")
-    plt.tight_layout()
     return plt
 
 def create_word_cloud(text):

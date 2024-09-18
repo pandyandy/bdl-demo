@@ -44,8 +44,8 @@ Welcome to the Playground! Here, you can experiment with prompting an LLM to con
 ### How it works:
 1. Choose from different unstructured text inputs or provide your own.
 2. Go through a few steps of prompting to structure the data.
-3. The LLM will attempt to convert the unstructured data based on your prompt.
-4. You can iterate and refine your prompts to improve the results.
+3. The LLM will attempt to transform the unstructured data based on your prompt.
+4. You can try different prompts to see how they affect the results.
 
 ### Tips for effective prompting:
 - Be clear and specific about the desired output format.
