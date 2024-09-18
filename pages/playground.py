@@ -146,7 +146,7 @@ def step1():
     keboola.write_table(table_id='in.c-bdl.data-app-bdl', df=st.session_state.df, is_incremental=True)
 
     col1, col2, col3 = st.columns(3)
-    if col3.button("⏩ Step 2", on_click=lambda: st.session_state.update(step=st.session_state.step + 1, text_input=text_input), use_container_width=True):
+    if col3.button("⏩ Continue to Step 2", on_click=lambda: st.session_state.update(step=st.session_state.step + 1, text_input=text_input), use_container_width=True):
         st.rerun()
 
 # Step 2: Initial analysis
