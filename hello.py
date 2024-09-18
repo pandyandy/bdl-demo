@@ -41,7 +41,7 @@ with col1:
 
 col1, col2 = st.columns([0.4, 0.6])
 with col2:
-    with stylable_container(key="blue_container", css_styles="{background-color: #238DFF; border-radius: 0.5rem; padding: 1em; margin-top: 10px;}"):
+    with stylable_container(key="blue_container_hello", css_styles="{background-color: #238DFF; border-radius: 0.5rem; padding: 1em; margin-top: 10px;}"):
         with st.container():
             st.markdown(f"""  
 <h4 style='color: white;'>🤓 Try it yourself</h4>
@@ -51,12 +51,11 @@ with col2:
 """,
     unsafe_allow_html=True
 )
-
-with stylable_container(key="grey_container", css_styles="{background-color: #F7F7F7; border-radius: 0.5rem; padding: 1em; margin-top: 10px;}"):
+st.markdown("#### About Keboola", unsafe_allow_html=True)
+with stylable_container(key="grey_container_hello", css_styles="{background-color: #F7F7F7; border-radius: 0.5rem; padding: 1em;}"):
     with st.container():
-        st.markdown(f"""  
-#### About Keboola
-Keboola is a leader in data integration and analytics platforms. We specialize in helping businesses harness the power of their data through innovative solutions that streamline data processes, from extraction and transformation to analysis and visualization. With Keboola, companies can unlock the full potential of their data assets and drive informed decision-making across their organizations.
+        st.markdown(f"""
+Keboola is a data operations platform that empowers organizations to automate their data workflows, integrate various data sources, and create meaningful data products. Our platform is designed to help data engineers, data scientists, and business users collaborate more effectively by simplifying complex data processes and enhancing data-driven decision-making.
 """,
 unsafe_allow_html=True
 )

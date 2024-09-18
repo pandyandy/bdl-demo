@@ -22,24 +22,28 @@ if '_url' not in st.session_state:
 client = OpenAI(api_key=st.secrets['api_key'])
 
 def ask_openai(question, image_url):
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant answering questions about images. If the question is not related to the image, don't answer."},
-            {"role": "user",
-            "content": [
-                {"type": "text", "text": question},
-                {
-                "type": "image_url",
-                "image_url": {
-                    "url": image_url,
-                },
-                },
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant answering questions about images. If the question is not related to the image, don't answer."},
+                {"role": "user",
+                "content": [
+                    {"type": "text", "text": question},
+                    {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": image_url,
+                    },
+                    },
+                ],
+                }
             ],
-            }
-        ],
-    )
-    return response.choices[0].message.content
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
+        return None
 
 def update_url():
     """
