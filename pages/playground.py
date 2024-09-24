@@ -45,7 +45,7 @@ if 'df' not in st.session_state:
 if 'name' not in st.session_state:
     st.session_state.name = None
 if 'company' not in st.session_state:
-    st.session_state.compnay = None
+    st.session_state.company = None
 if 'contact' not in st.session_state:
     st.session_state.contact = None
 
