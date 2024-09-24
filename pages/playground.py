@@ -42,7 +42,13 @@ if 'llm_response_step_5_json' not in st.session_state:
     st.session_state.llm_response_step_5_json = None
 if 'df' not in st.session_state:
     st.session_state.df = pd.DataFrame()
-
+if 'name' not in st.session_state:
+    st.session_state.name = None
+if 'company' not in st.session_state:
+    st.session_state.name = None
+if 'contact' not in st.session_state:
+    st.session_state.name = None
+    
 logo()
 st.header("🎢 Unstructured to Structured Data Playground")
 sidebar_pages()

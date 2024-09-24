@@ -10,11 +10,11 @@ st.set_page_config(
 )
 
 if 'name' not in st.session_state:
-    st.session_state.name = ""
+    st.session_state.name = None
 if 'company' not in st.session_state:
-    st.session_state.name = ""
+    st.session_state.name = None
 if 'contact' not in st.session_state:
-    st.session_state.name = ""
+    st.session_state.name = None
     
 sidebar_pages()
         
