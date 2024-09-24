@@ -45,10 +45,10 @@ if 'df' not in st.session_state:
 if 'name' not in st.session_state:
     st.session_state.name = None
 if 'company' not in st.session_state:
-    st.session_state.name = None
+    st.session_state.compnay = None
 if 'contact' not in st.session_state:
-    st.session_state.name = None
-    
+    st.session_state.contact = None
+
 logo()
 st.header("🎢 Unstructured to Structured Data Playground")
 sidebar_pages()
