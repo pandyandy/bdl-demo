@@ -8,7 +8,12 @@ from datetime import datetime
 from openai import OpenAI
 from streamlit_extras.stylable_container import stylable_container
 from ui import sidebar_pages, logo
-from pages.client import keboola
+from pages.kstr import KeboolaStreamlitRaw
+
+URL = st.secrets["KEBOOLA_URL"]
+TOKEN = st.secrets["STORAGE_API_TOKEN"] 
+
+keboola = KeboolaStreamlitRaw(URL, TOKEN)
 
 if 'step' not in st.session_state:
     st.session_state.step = 1
@@ -149,7 +154,7 @@ def step1():
         'date': [datetime.now().strftime('%Y-%m-%d %H:%M:%S')]
     })
 
-    keboola.write_table(table_id='in.c-bdl.data-app-bdl', df=st.session_state.df, is_incremental=True)
+    keboola.write_table_raw(table_id='in.c-bdl.data-app-bdl', df=st.session_state.df, is_incremental=True)
 
     col1, col2, col3 = st.columns(3)
     if col3.button("⏩ Continue to Step 2", on_click=lambda: st.session_state.update(step=st.session_state.step + 1, text_input=text_input), use_container_width=True):
