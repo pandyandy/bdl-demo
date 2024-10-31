@@ -30,7 +30,7 @@ class KeboolaStreamlitRaw(KeboolaStreamlit):
                 jobId=job_id, 
                 message='Streamlit App Write Table', 
                 endpoint='/v2/storage/tables/table_id/import-async',
-                data=df
+                event_data=df
             )
         except Exception as e:
             st.error(f'Data upload failed with: {str(e)}')
