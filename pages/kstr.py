@@ -16,10 +16,10 @@ class KeboolaStreamlitRaw(KeboolaStreamlit):
             is_incremental (bool): Whether to load incrementally (do not truncate the table). Defaults to False.
             endpoint (str): The endpoint for loading data.
         """
-        client = self._get_sapi_client()
-        csv_path = f'{table_id}.csv'
+        client = self.__client
+        csv_path = f'{table_id}.csv.gz'
         try:
-            df.to_csv(csv_path, index=False)
+            df.to_csv(csv_path, index=False, compression='gzip')
             
             files = Files(self.root_url, self.token)
             file_id = files.upload_file(file_path=csv_path, tags=['file-import'],
