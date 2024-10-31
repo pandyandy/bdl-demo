@@ -13,7 +13,6 @@ class KeboolaStreamlitRaw(KeboolaStreamlit):
             table_id (str): The ID of the table to load data into.
             df (pd.DataFrame): The DataFrame containing the data to be loaded.
             is_incremental (bool): Whether to load incrementally (do not truncate the table). Defaults to False.
-            endpoint (str): The endpoint for loading data.
         """
         client = self._KeboolaStreamlit__client
         csv_path = f'{table_id}.csv.gz'
