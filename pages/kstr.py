@@ -4,8 +4,7 @@ import os
 from keboola_streamlit import KeboolaStreamlit
 from kbcstorage.client import Files
 
-class KeboolaStreamlitRaw(KeboolaStreamlit):
-
+class KeboolaStreamlitRaw(KeboolaStreamlit): 
     def write_table_raw(self, table_id: str, df: pd.DataFrame, is_incremental: bool = False):
         """
         Load data into an existing table.
@@ -16,12 +15,12 @@ class KeboolaStreamlitRaw(KeboolaStreamlit):
             is_incremental (bool): Whether to load incrementally (do not truncate the table). Defaults to False.
             endpoint (str): The endpoint for loading data.
         """
-        client = self.__client
+        client = self._KeboolaStreamlit__client
         csv_path = f'{table_id}.csv.gz'
         try:
             df.to_csv(csv_path, index=False, compression='gzip')
             
-            files = Files(self.root_url, self.token)
+            files = Files(self._KeboolaStreamlit__root_url, self._KeboolaStreamlit__token)
             file_id = files.upload_file(file_path=csv_path, tags=['file-import'],
                                         do_notify=False, is_public=False)
             
