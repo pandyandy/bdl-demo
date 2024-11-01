@@ -43,7 +43,7 @@ def logo():
 
 def display_footer_section():
     # Inject custom CSS for alignment and style
-    image_path = os.path.join(os.path.dirname(__file__), './static/keboola_logo_grey.png')
+    image_path = os.path.join(os.path.dirname(__file__), 'static/keboola_logo_grey.png')
     st.write(image_path)
     logo_base64 = get_image_base64(image_path)
     
